@@ -1,0 +1,47 @@
+# Python bytecode files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+*.pyo
+*.db
+*.sqlite3
+db.sqlite3
+
+# Virtual environment
+venv/
+env/
+*.env
+
+# Django migrations
+migrations/
+
+# Media files
+media/
+
+# Static files
+static/
+
+# VSCode settings
+.vscode/
+
+# PyCharm settings
+.idea/
+
+# macOS system files
+.DS_Store
+
+# Windows system files
+Thumbs.db
+
+# Coverage reports
+.coverage
+.coverage.*
+
+# Python virtual environment
+*.virtualenv
