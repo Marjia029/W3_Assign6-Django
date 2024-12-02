@@ -1,0 +1,26 @@
+[
+    {
+        "Bangladesh": "bangladesh",
+        "locations": [
+            {
+                "dhaka": "bangladesh/dhaka"
+            }
+        ]
+    },
+    {
+        "USA": "usa",
+        "locations": [
+            {
+                "illinois": "usa/illinois"
+            },
+            {
+                "nevada": "usa/nevada",
+                "locations": [
+                    {
+                        "las-vegas": "usa/nevada/las-vegas"
+                    }
+                ]
+            }
+        ]
+    }
+]

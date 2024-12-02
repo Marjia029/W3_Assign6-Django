@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Django App</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex flex-col min-h-screen">
+
+    <!-- Main container -->
+    <div class="w-full max-w-md p-6 bg-white rounded-xl shadow-lg space-y-6 mx-auto mt-12 items-center justify-center">
+
+        <!-- Header with navigation links -->
+        <!-- <header>
+            <nav class="flex justify-center space-x-6">
+                <a href="{% url 'signup' %}" class="text-blue-500 hover:text-blue-700 transition duration-300">Sign Up</a>
+                <a href="{% url 'login' %}" class="text-blue-500 hover:text-blue-700 transition duration-300">Login</a>
+            </nav>
+        </header> -->
+
+        <!-- Title -->
+        <h2 class="text-3xl font-bold text-center text-blue-600">Login</h2>
+
+        <!-- Display messages -->
+        {% if messages %}
+        <ul class="space-y-2">
+            {% for message in messages %}
+                <li class="text-sm {% if message.tags == 'error' %}text-red-600{% else %}text-green-600{% endif %}">
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <!-- Login Form -->
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                <input type="text" name="username" id="username" required class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" name="password" id="password" required class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <button type="submit" class="w-full py-3 mt-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300">Login</button>
+        </form>
+
+        <p class="text-center text-sm text-gray-600">Don't have an account? <a href="{% url 'signup' %}" class="text-blue-500 hover:text-blue-700 transition duration-300">Sign up here</a></p>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-200 text-center text-gray-600 py-4 mt-auto">
+        <p>&copy; 2024 Django Application</p>
+    </footer>
+
+</body>
+</html>
