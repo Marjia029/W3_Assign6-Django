@@ -1,48 +1,81 @@
+from django.views.generic import CreateView
+from django.views.generic.edit import FormView
+from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import Group
+from django.contrib.auth import get_user_model
 from django.contrib import messages
+from django.urls import reverse_lazy
+from django.views.generic import TemplateView
 from .forms import CustomUserCreationForm
+
+User = get_user_model()
 
 
 # Create your views here.
-def index(request):
-    return render(request, 'index.html')
+class IndexView(TemplateView):
+    template_name = 'index.html'  # Specify the template to render
 
 
-def signup(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)  # Don't save to the database yet
-            user.is_active = False  # Set the user to inactive
-            user.save()
-            # Add user to the "Property Owner" group
+class SignupView(CreateView):
+    model = User  # Use the User model for the form
+    form_class = CustomUserCreationForm  # Use your custom user creation form
+    template_name = 'signup.html'  # The template to render the form
+    success_url = reverse_lazy('login')  # Redirect to login page on success
+
+    def form_valid(self, form):
+        # Process the valid form data
+        user = form.save(commit=False)
+        user.is_active = False  # Set the user to inactive
+        user.save()
+
+        # Add the user to the "Property Owners" group
+        try:
             group = Group.objects.get(name='Property Owners')
             user.groups.add(group)
-            user.save()
-            messages.success(request, 'Your account has been created successfully. Wait for admin activation.')
-            return redirect('login')
-        else:
-            messages.error(request, 'Error during sign-up. Please try again.')
-    else:
-        form = CustomUserCreationForm()
-    return render(request, 'signup.html', {'form': form})
+        except Group.DoesNotExist:
+            messages.error(self.request, 'Property Owners group does not exist. Please contact admin.')
+
+        # Add a success message
+        messages.success(self.request, 'Your account has been created successfully. Wait for admin activation.')
+        return redirect(self.success_url)
+
+    def form_invalid(self, form):
+        # Handle invalid form submissions
+        messages.error(self.request, 'Error during sign-up. Please try again.')
+        return super().form_invalid(form)
 
 
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
+class LoginView(FormView):
+    template_name = 'login.html'  # Template for rendering the login page
+    form_class = AuthenticationForm  # Use Django's built-in authentication form
+    success_url = reverse_lazy('index')  # Redirect URL after successful login
+
+    def form_valid(self, form):
+        """
+        This method is called when valid form data has been POSTed.
+        Override it to add custom authentication logic.
+        """
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+        user = authenticate(self.request, username=username, password=password)
 
         if user is not None:
             if user.is_active:
-                login(request, user)
-                return redirect('index')  # Or wherever you want to redirect after login
+                login(self.request, user)
+                messages.success(self.request, f'Welcome back, {user.username}!')
+                return super().form_valid(form)
             else:
-                messages.error(request, 'Your account is not activated yet. Please wait for admin approval.')
+                messages.error(self.request, 'Your account is not activated yet. Please wait for admin approval.')
+                return self.form_invalid(form)
         else:
-            messages.error(request, 'Invalid login credentials. Please try again.')
-    
-    return render(request, 'login.html')
+            messages.error(self.request, 'Invalid login credentials. Please try again.')
+            return self.form_invalid(form)
+
+    def form_invalid(self, form):
+        """
+        Handle the case where the form is invalid.
+        """
+        messages.error(self.request, 'Invalid login attempt. Please correct the errors and try again.')
+        return super().form_invalid(form)

@@ -8,7 +8,7 @@ from .models import Location, Accommodation, LocalizeAccommodation
 
 # Admin configuration for Location model using LeafletGeoAdmin
 class LocationAdmin(LeafletGeoAdmin):  # Changed to LeafletGeoAdmin
-    list_display = ('id', 'title', 'location_type', 'country_code', 'state_abbr', 'city', 'created_at', 'updated_at')
+    list_display = ('id', 'title', 'center', 'location_type', 'country_code', 'state_abbr', 'city', 'created_at', 'updated_at')
     search_fields = ('title', 'country_code', 'state_abbr', 'city')
     list_filter = ('location_type', 'country_code')
     settings_overrides = {  # Optional: Customize Leaflet map settings
