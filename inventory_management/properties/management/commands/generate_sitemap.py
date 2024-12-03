@@ -43,7 +43,7 @@ class Command(BaseCommand):
                     city_url = f"{country_slug}/{state_slug}/{city_slug}"
 
                     city_data = {city_slug: city_url}
-                    state_data.setdefault('locations', []).append(city_data)  # Add city under state
+                    country_data.setdefault('locations').append(city_data)  # Add city under state
 
             # Fetch cities directly under the country (no state parent)
             cities = country.sub_locations.filter(location_type='city').order_by('title')

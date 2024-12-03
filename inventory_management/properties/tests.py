@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.contrib.auth.models import Group, User
 from django.contrib.messages import get_messages
 from django.contrib import messages
-from .views import SignupView 
+from .views import SignupView
 from .models import Location, Accommodation, LocalizeAccommodation
 
 
@@ -77,9 +77,6 @@ class LocationModelTest(TestCase):
         locations = Location.objects.all()
         titles = [location.title for location in locations]
         self.assertEqual(titles, ["Asia", "Beijing", "India"])
-
-
-User = get_user_model()
 
 
 class AccommodationModelTest(TestCase):
@@ -316,10 +313,10 @@ class SignupViewTestCase(TestCase):
         user = User.objects.get(username='testuser')
         self.assertIsNotNone(user)
         self.assertFalse(user.is_active)  # Ensure user is inactive
-        
+
         # Check group assignment
         self.assertIn(self.property_owners_group, user.groups.all())
-        
+
         # Check messages
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertEqual(len(messages_list), 1)
@@ -327,7 +324,7 @@ class SignupViewTestCase(TestCase):
             messages_list[0].message, 
             'Your account has been created successfully. Wait for admin activation.'
         )
-    
+
     def test_invalid_signup_form(self):
         """
         Test signup with invalid form data
@@ -355,16 +352,16 @@ class SignupViewTestCase(TestCase):
                 'password2': ''
             }
         ]
-        
+
         for invalid_data in invalid_data_sets:
             response = self.client.post(self.signup_url, data=invalid_data)
-            
+
             # Ensure form is not valid and user is not created
             self.assertEqual(response.status_code, 200)  # Should return to signup page
             self.assertFalse(User.objects.filter(username=invalid_data.get('username')).exists())
             self.assertIn('form', response.context)
             self.assertTrue(response.context['form'].errors)  # Form should have validation errors
-    
+
     def test_duplicate_username(self):
         """
         Test signup with existing username
@@ -375,67 +372,67 @@ class SignupViewTestCase(TestCase):
             email='existing@example.com',
             password='ExistingPassword123!'
         )
-        
+
         duplicate_data = {
             'username': 'existinguser',
             'email': 'newuser@example.com',
             'password1': 'ComplexPassword123!',
             'password2': 'ComplexPassword123!'
         }
-        
+
         response = self.client.post(self.signup_url, data=duplicate_data)
-        
+
         # Ensure user is not created
         self.assertEqual(response.status_code, 200)
         self.assertFalse(User.objects.filter(email='newuser@example.com').exists())
         self.assertIn('form', response.context)
         self.assertTrue(response.context['form'].errors)  # Should have username already exists error
-    
+
     def test_missing_property_owners_group(self):
         """
         Test scenario where Property Owners group does not exist
         """
         # Delete the Property Owners group
         Group.objects.filter(name='Property Owners').delete()
-        
+
         signup_data = {
             'username': 'testuser',
             'email': 'testuser@example.com',
             'password1': 'ComplexPassword123!',
             'password2': 'ComplexPassword123!'
         }
-        
+
         response = self.client.post(self.signup_url, data=signup_data)
-        
+
         # Check that the response is a 200 OK (form re-rendered)
         self.assertEqual(response.status_code, 200)
-        
+
         # Verify no user was created
         self.assertFalse(User.objects.filter(username='testuser').exists())
-        
+
         # Check messages
         messages_list = list(messages.get_messages(response.wsgi_request))
-        
+
         # Debug print
         print("All Messages:", [f"{msg.level}: {msg.message}" for msg in messages_list])
-        
+
         # Filter for error messages
         error_messages = [msg for msg in messages_list if msg.level == messages.ERROR]
-        
+
         # Verify error messages content
         self.assertTrue(error_messages, "No error messages found")
-        
+
         # Check if any error message contains the group missing text
         group_error_exists = any(
             'Property Owners group does not exist' in msg.message 
             for msg in error_messages
         )
         self.assertTrue(group_error_exists, "No message about missing Property Owners group found")
-        
+
         # Ensure no success messages
         success_messages = [msg for msg in messages_list if msg.level == messages.SUCCESS]
         self.assertEqual(len(success_messages), 0)
-    
+
     def test_signup_view_permissions(self):
         """
         Verify that the signup view is publicly accessible

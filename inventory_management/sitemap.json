@@ -17,15 +17,16 @@
         "USA": "usa",
         "locations": [
             {
+                "aurora": "usa/illinois/aurora"
+            },
+            {
                 "illinois": "usa/illinois"
             },
             {
-                "nevada": "usa/nevada",
-                "locations": [
-                    {
-                        "las-vegas": "usa/nevada/las-vegas"
-                    }
-                ]
+                "las-vegas": "usa/nevada/las-vegas"
+            },
+            {
+                "nevada": "usa/nevada"
             }
         ]
     }
