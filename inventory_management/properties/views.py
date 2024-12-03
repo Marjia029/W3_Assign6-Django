@@ -22,7 +22,7 @@ class SignupView(CreateView):
     model = User  # Use the User model for the form
     form_class = CustomUserCreationForm  # Use your custom user creation form
     template_name = 'signup.html'  # The template to render the form
-    success_url = reverse_lazy('index')  # Redirect to login page on success
+    success_url = reverse_lazy('login')  # Redirect to login page on success
 
     def form_valid(self, form):
         try:

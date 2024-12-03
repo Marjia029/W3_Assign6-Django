@@ -23,6 +23,7 @@ class AccommodationAdmin(LeafletGeoAdmin):
     list_filter = ('published', 'location_id')
     raw_id_fields = ('location_id', 'user_id')
     ordering = ('-created_at',)
+    autocomplete_fields = ["location_id"]
 
     settings_overrides = {  # Optional: Customize Leaflet map settings
         'DEFAULT_CENTER': (0, 0),  # Latitude and Longitude for default map center
@@ -37,23 +38,33 @@ class AccommodationAdmin(LeafletGeoAdmin):
             return qs.filter(user_id=request.user)
         return qs  # Admins can see all accommodations
 
+    def get_form(self, request, obj=None, **kwargs):
+        """
+        Modify the form to set the user_id field as read-only 
+        and pre-populate it with the current user for all users.
+        """
+        form = super().get_form(request, obj, **kwargs)
+
+        # Create a custom form that sets the user_id field as initial and disabled
+        class CustomForm(form):
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
+                # Set the initial value and disable the field
+                self.fields['user_id'].initial = request.user
+                self.fields['user_id'].disabled = True
+                self.fields['user_id'].widget.attrs['readonly'] = True
+
+        return CustomForm
+
     def save_model(self, request, obj, form, change):
-        """Automatically assign the logged-in user as the creator if not set."""
+        """
+        Ensure user_id is set for all users during both creation and editing.
+        """
+        # If user_id is not set, assign the current user
         if not obj.user_id:
             obj.user_id = request.user
+        
         super().save_model(request, obj, form, change)
-
-    def has_change_permission(self, request, obj=None):
-        """Allow Property Owner users to edit only their own accommodations."""
-        if obj and obj.user_id != request.user:
-            return False  # Restrict Property Owners from editing others' records
-        return super().has_change_permission(request, obj)
-
-    def has_delete_permission(self, request, obj=None):
-        """Allow Property Owner users to delete only their own accommodations."""
-        if obj and obj.user_id != request.user:
-            return False  # Restrict Property Owners from deleting others' records
-        return super().has_delete_permission(request, obj)
 
 
 class LocalizeAccommodationAdmin(admin.ModelAdmin):
@@ -64,8 +75,9 @@ class LocalizeAccommodationAdmin(admin.ModelAdmin):
 
 class CustomUserAdmin(UserAdmin):
     model = User
-    list_display = ['id', 'email', 'username', 'is_active', 'is_staff']
+    list_display = ['id', 'username', 'email', 'is_active', 'is_staff']
     list_filter = ['is_active', 'is_staff']
+    ordering = ('id',)
 
 
 # Register models with the admin interface

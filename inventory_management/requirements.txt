@@ -1,4 +1,5 @@
 asgiref==3.8.1
+coverage==7.6.8
 Django==5.1.3
 django-leaflet==0.31.0
 psycopg2-binary==2.9.10

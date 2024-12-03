@@ -310,7 +310,7 @@ class SignupViewTestCase(TestCase):
         response = self.client.post(self.signup_url, data=signup_data)
         
         # Check redirect
-        self.assertRedirects(response, reverse('index'))
+        self.assertRedirects(response, reverse('login'))
         
         # Verify user creation
         user = User.objects.get(username='testuser')
@@ -371,8 +371,8 @@ class SignupViewTestCase(TestCase):
         """
         # Create an existing user
         User.objects.create_user(
-            username='existinguser', 
-            email='existing@example.com', 
+            username='existinguser',
+            email='existing@example.com',
             password='ExistingPassword123!'
         )
         
