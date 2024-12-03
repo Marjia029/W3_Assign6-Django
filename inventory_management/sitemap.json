@@ -3,6 +3,12 @@
         "Bangladesh": "bangladesh",
         "locations": [
             {
+                "barishal": "bangladesh/barishal"
+            },
+            {
+                "chittagong": "bangladesh/chittagong"
+            },
+            {
                 "dhaka": "bangladesh/dhaka"
             }
         ]

@@ -1,7 +1,7 @@
 from django.views.generic import CreateView
 from django.views.generic.edit import FormView
 from django.contrib.auth.forms import AuthenticationForm
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
@@ -22,24 +22,34 @@ class SignupView(CreateView):
     model = User  # Use the User model for the form
     form_class = CustomUserCreationForm  # Use your custom user creation form
     template_name = 'signup.html'  # The template to render the form
-    success_url = reverse_lazy('login')  # Redirect to login page on success
+    success_url = reverse_lazy('index')  # Redirect to login page on success
 
     def form_valid(self, form):
-        # Process the valid form data
-        user = form.save(commit=False)
-        user.is_active = False  # Set the user to inactive
-        user.save()
-
-        # Add the user to the "Property Owners" group
         try:
-            group = Group.objects.get(name='Property Owners')
-            user.groups.add(group)
-        except Group.DoesNotExist:
-            messages.error(self.request, 'Property Owners group does not exist. Please contact admin.')
+            # First, check if the group exists before creating the user
+            try:
+                group = Group.objects.get(name='Property Owners')
+            except Group.DoesNotExist:
+                # If group doesn't exist, add an error message and prevent signup
+                messages.error(self.request, 'Property Owners group does not exist. Please contact admin.')
+                return self.form_invalid(form)
 
-        # Add a success message
-        messages.success(self.request, 'Your account has been created successfully. Wait for admin activation.')
-        return redirect(self.success_url)
+            # If group exists, proceed with user creation
+            user = form.save(commit=False)
+            user.is_active = False  # Set the user to inactive
+            user.save()
+
+            # Add the user to the "Property Owners" group
+            user.groups.add(group)
+
+            # Add a success message
+            messages.success(self.request, 'Your account has been created successfully. Wait for admin activation.')
+            return redirect(self.success_url)
+
+        except Exception as e:
+            # Catch any other unexpected errors
+            messages.error(self.request, f'An error occurred during signup: {str(e)}')
+            return self.form_invalid(form)
 
     def form_invalid(self, form):
         # Handle invalid form submissions
