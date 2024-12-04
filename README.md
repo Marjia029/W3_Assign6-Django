@@ -48,7 +48,6 @@ This project is a **Property Management System** built using Django, PostgreSQL,
    ```bash
    git clone https://github.com/Marjia029/W3_Assign6-Django.git
    cd 3_Assign6-Django
-   cd inventory_management
    ```
 2. **Create and Activate Virtual Environment**:
     ```bash
@@ -56,4 +55,8 @@ This project is a **Property Management System** built using Django, PostgreSQL,
     source venv/bin/activate  # For Linux/Mac
     venv\Scripts\activate     # For Windows
     ```
-3. **Create and Activate Virtual Environment**:
+3. **Configure the PostgreSQL Database with PostGIS**:
+```bash
+   cd inventory_management
+   docker-compose up --build
+```

@@ -2,19 +2,22 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
+from import_export.admin import ImportExportModelAdmin
 from leaflet.admin import LeafletGeoAdmin
 from .models import Location, Accommodation, LocalizeAccommodation
+from .resources import LocationResource
 
 
 # Admin configuration for Location model using LeafletGeoAdmin
-class LocationAdmin(LeafletGeoAdmin):  # Changed to LeafletGeoAdmin
+class LocationAdmin(ImportExportModelAdmin, LeafletGeoAdmin):
+    resource_class = LocationResource  # Changed to LeafletGeoAdmin
     list_display = ('id', 'title', 'center', 'location_type', 'country_code', 'state_abbr', 'city', 'created_at', 'updated_at')
     search_fields = ('title', 'country_code', 'state_abbr', 'city')
     list_filter = ('location_type', 'country_code')
-    settings_overrides = {  # Optional: Customize Leaflet map settings
-        'DEFAULT_CENTER': (0, 0),  # Latitude and Longitude for default map center
-        'DEFAULT_ZOOM': 6,         # Default zoom level
-    }
+    # settings_overrides = {  # Optional: Customize Leaflet map settings
+    #     'DEFAULT_CENTER': (0, 0),  # Latitude and Longitude for default map center
+    #     'DEFAULT_ZOOM': 6,         # Default zoom level
+    # }
 
 
 class AccommodationAdmin(LeafletGeoAdmin):
