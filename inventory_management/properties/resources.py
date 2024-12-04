@@ -6,11 +6,11 @@ class LocationResource(resources.ModelResource):
     class Meta:
         model = Location
         fields = (
-            'id', 
-            'title', 
-            'center', 
-            'parent_id', 
-            'location_type', 
+            'id',
+            'title',
+            'center',
+            'parent_id',
+            'location_type',
             'country_code', 
             'state_abbr', 
             'city', 

@@ -1,0 +1,3 @@
+id,title,center,parent_id,location_type,country_code,state_abbr,city
+NA_1,North America,POINT(-100.0 45.0),,continent,NA,,
+CL_1,California,POINT(-119.4179 36.7783),1,state,US,CA,

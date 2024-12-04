@@ -90,9 +90,9 @@ class Accommodation(models.Model):
     review_score = models.DecimalField(max_digits=3, decimal_places=1, default=0)
     usd_rate = models.DecimalField(max_digits=10, decimal_places=2)
     center = gis_models.PointField()
-    images = models.JSONField()  # JSON array of image URLs
+    images = models.JSONField(null=True, blank=True)  # JSON array of image URLs
     location_id = models.ForeignKey(Location, on_delete=models.CASCADE)
-    amenities = models.JSONField()  # JSONB array of amenities
+    amenities = models.JSONField(null=True, blank=True)  # JSONB array of amenities
     user_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     published = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -127,3 +127,4 @@ class LocalizeAccommodation(models.Model):
     class Meta:
         verbose_name = "Localized Accommodation"
         verbose_name_plural = "Localized Accommodations"
+

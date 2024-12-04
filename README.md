@@ -56,7 +56,53 @@ This project is a **Property Management System** built using Django, PostgreSQL,
     venv\Scripts\activate     # For Windows
     ```
 3. **Configure the PostgreSQL Database with PostGIS**:
-```bash
+
+   Make sure you have Docker installed in your PC. If you don't have Docker installed, please install Docker first. You can check the [Docker Docs](https://docs.docker.com)  to install Docker in your PC.
+
+   If you are using Windows OS, make sure you have Docker Desktop open before running these commands.
+   ```bash
    cd inventory_management
    docker-compose up --build
-```
+   ```
+
+      Now open another terminal and run the command
+   ```bash
+   docker ps
+   ```
+      Now you can see the list of docker containers that are running. Now Restart your PC and run again
+   ```bash
+   docker-compose up --build
+   ```
+   now click http://localhost:8000  to see your application running. You will see an interface like
+   
+   ![Django Application](./images/Screenshot%20from%202024-12-04%2016-38-18.png)
+
+4. **Run Migrations**:
+
+   In terminal run the commands
+   ```bash
+   docker exec -it inventory_management-web-1 python manage.py makemigrations 
+   docker exec -it inventory_management-web-1 python manage.py migrate
+   ```
+5. **Create Super User**:
+
+   
+   ```bash
+   docker exec -it inventory_management-web-1 python manage.py createsuperuser 
+   ```
+
+   Enter valiid information about superuser and create superuser
+
+   ![Superuser](./images/Screenshot%20from%202024-12-04%2016-55-55.png)
+
+6. **Login to Django Admin Panel**:
+  
+   Navigate to the [Django Admin Panel](https://localhost:8000/admin) and  Log in as Super User.
+   
+   ![Super User Login](./images/Screenshot%20from%202024-12-04%2018-13-34.png)
+
+7. **Add data to the Tables**:
+
+   After logging in the admin panel you will see a interface like following-
+
+   ![Admin Interface](./images/)

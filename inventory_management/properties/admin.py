@@ -21,7 +21,7 @@ class LocationAdmin(ImportExportModelAdmin, LeafletGeoAdmin):
 
 
 class AccommodationAdmin(LeafletGeoAdmin):
-    list_display = ('id', 'title', 'user_id', 'country_code', 'usd_rate', 'review_score', 'bedroom_count', 'published', 'created_at', 'updated_at')
+    list_display = ('id', 'title', 'user_id', 'feed', 'country_code', 'usd_rate', 'review_score', 'bedroom_count', 'published', 'created_at', 'updated_at')
     search_fields = ('title', 'country_code', 'location_id__title', 'amenities')
     list_filter = ('published', 'location_id')
     raw_id_fields = ('location_id', 'user_id')
@@ -81,7 +81,7 @@ class CustomUserAdmin(UserAdmin):
     list_display = ['id', 'username', 'email', 'is_active', 'is_staff']
     list_filter = ['is_active', 'is_staff']
     ordering = ('id',)
-
+    
 
 # Register models with the admin interface
 admin.site.register(Location, LocationAdmin)
