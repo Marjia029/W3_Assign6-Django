@@ -45,3 +45,7 @@ Thumbs.db
 
 # Python virtual environment
 *.virtualenv
+
+# Ignore specific files
+0008_partion_localiuzeaccomodation.py
+/inventory_management/sitemap.json
